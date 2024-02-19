@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class UpdateConsentController {
+public class ConsentController {
     private final UpdateConsentUseCase updateConsentUseCase;
 
     @PutMapping("/students/{studentId}/consents")

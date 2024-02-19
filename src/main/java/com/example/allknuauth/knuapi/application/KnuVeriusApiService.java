@@ -1,6 +1,6 @@
 package com.example.allknuauth.knuapi.application;
 
-import com.example.allknuauth.knuapi.application.dto.VeriusInfo;
+import com.example.allknuauth.knuapi.application.port.out.VeriusInfo;
 
 import java.util.Map;
 

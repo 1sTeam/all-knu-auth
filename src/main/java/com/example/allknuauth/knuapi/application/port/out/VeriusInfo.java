@@ -1,4 +1,4 @@
-package com.example.allknuauth.knuapi.application.dto;
+package com.example.allknuauth.knuapi.application.port.out;
 
 import com.example.allknuauth.consent.domain.Consent;
 import lombok.AllArgsConstructor;
@@ -22,21 +22,21 @@ public class VeriusInfo {
     }
 
     public String getStudentId(Consent consent) {
-        if (consent.isStudentId()) {
+        if (consent.isValue()) {
             return this.studentId;
         }
         return null;
     }
 
     public String getMajor(Consent consent) {
-        if (consent.isMajor()) {
+        if (consent.isValue()) {
             return this.major;
         }
         return null;
     }
 
     public String getName(Consent consent) {
-        if (consent.isName()) {
+        if (consent.isValue()) {
             return this.name;
         }
         return null;

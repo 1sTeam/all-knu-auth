@@ -3,6 +3,7 @@ package com.example.allknuauth.consent.adapter.out.persistence;
 import com.example.allknuauth.consent.application.port.out.LoadConsentPort;
 import com.example.allknuauth.consent.application.port.out.UpdateConsentPort;
 import com.example.allknuauth.consent.domain.Consent;
+import com.example.allknuauth.consent.domain.ConsentType;
 import com.example.allknuauth.student.domain.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,18 +20,26 @@ class ConsentPersistenceAdapter implements UpdateConsentPort, LoadConsentPort {
         if (consent == null){
             return null;
         }
-        return consentMapper.mapToConsentEntity(consent);
+        return consentMapper.toDomain(consent);
+    }
+
+    @Override
+    public Consent loadConsentByStudentAndType(Student student, ConsentType type) {
+        ConsentEntity consent = consentRepository.findByStudentAndType(student, type);
+        if (consent == null){
+            return null;
+        }
+        return consentMapper.toDomain(consent);
     }
 
     @Override
     public Consent updateConsent(Consent consent) {
         ConsentEntity consentEntity = ConsentEntity.builder()
                 .id(consent.getId())
-                .isStudentId(consent.isStudentId())
-                .isName(consent.isName())
-                .isMajor(consent.isMajor())
+                .type(consent.getType())
+                .value(consent.isValue())
                 .build();
         consentEntity = consentRepository.save(consentEntity);
-        return consentMapper.mapToConsentEntity(consentEntity);
+        return consentMapper.toDomain(consentEntity);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.allknuauth.knuapi.application.dto;
+package com.example.allknuauth.knuapi.application.port.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

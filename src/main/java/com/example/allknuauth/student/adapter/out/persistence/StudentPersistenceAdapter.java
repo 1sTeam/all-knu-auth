@@ -18,7 +18,7 @@ public class StudentPersistenceAdapter implements LoadStudentPort, UpdateStudent
         if (student == null) {
             return null;
         }
-        return studentMapper.mapToStudentEntity(student);
+        return studentMapper.toDomain(student);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class StudentPersistenceAdapter implements LoadStudentPort, UpdateStudent
                 .name(student.getName())
                 .build();
         studentEntity = studentRepository.save(studentEntity);
-        return studentMapper.mapToStudentEntity(studentEntity);
+        return studentMapper.toDomain(studentEntity);
     }
 }

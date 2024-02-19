@@ -5,10 +5,11 @@ import com.example.allknuauth.consent.application.port.in.UpdateConsentUseCase;
 import com.example.allknuauth.consent.application.port.out.LoadConsentPort;
 import com.example.allknuauth.consent.application.port.out.UpdateConsentPort;
 import com.example.allknuauth.consent.domain.Consent;
+import com.example.allknuauth.consent.domain.ConsentType;
 import com.example.allknuauth.global.exception.errors.InvalidStudentIdException;
 import com.example.allknuauth.global.exception.errors.LoadVeriusStudentInfoFailedException;
-import com.example.allknuauth.knuapi.application.KnuVeriusApiService;
-import com.example.allknuauth.knuapi.application.dto.VeriusInfo;
+import com.example.allknuauth.knuapi.application.port.out.LoadVeriusStudentInfoPort;
+import com.example.allknuauth.knuapi.application.port.out.VeriusInfo;
 import com.example.allknuauth.student.application.port.out.LoadStudentPort;
 import com.example.allknuauth.student.application.port.out.UpdateStudentPort;
 import com.example.allknuauth.student.domain.Student;
@@ -24,19 +25,21 @@ public class UpdateConsentService implements UpdateConsentUseCase {
     private final UpdateConsentPort updateConsentPort;
     private final LoadStudentPort loadStudentPort;
     private final UpdateStudentPort updateStudentPort;
-    private final KnuVeriusApiService knuVeriusApiService;
+    private final LoadVeriusStudentInfoPort loadVeriusStudentInfoPort;
 
     @Override
     @Transactional
     public void updateConsents(String studentId, UpdateConsentCommand command) {
-        VeriusInfo veriusInfo = knuVeriusApiService.getStudentInfo(command.getSessionInfo().getVeriusCookies());
-        if (veriusInfo == null){
+        VeriusInfo veriusInfo = loadVeriusStudentInfoPort.loadVeriusStudentInfo(command.getSessionInfo().getVeriusCookies());
+        if (veriusInfo == null) {
             throw new LoadVeriusStudentInfoFailedException();
         }
         validateStudentId(studentId, veriusInfo);
         Student student = findStudent(studentId);
-        Consent consent = updateConsent(student, command);
-        updateStudentPort.updateStudent(Student.withId(student.getId(), veriusInfo.getStudentId(consent), veriusInfo.getMajor(consent), veriusInfo.getName(consent)));
+        updateStudentPort.updateStudent(Student.withId(student.getId(),
+                veriusInfo.getStudentId(updateConsentByType(student, ConsentType.STUDENT_ID, command.isStudentId())),
+                veriusInfo.getMajor(updateConsentByType(student, ConsentType.MAJOR, command.isMajor())),
+                veriusInfo.getName(updateConsentByType(student, ConsentType.NAME, command.isName()))));
     }
 
     private void validateStudentId(String studentId, VeriusInfo veriusInfo) {
@@ -53,12 +56,12 @@ public class UpdateConsentService implements UpdateConsentUseCase {
         return student;
     }
 
-    private Consent updateConsent(Student student, UpdateConsentCommand command) {
-        Consent consent = loadConsentPort.loadConsentByStudent(student);
+    private Consent updateConsentByType(Student student, ConsentType type, boolean value) {
+        Consent consent = loadConsentPort.loadConsentByStudentAndType(student, type);
         if (consent == null) {
-            consent = Consent.withoutId(command.isStudentId(), command.isName(), command.isMajor(), student);
+            consent = Consent.withoutId(type, value, student);
         } else {
-            consent = Consent.withId(consent.getId(), command.isStudentId(), command.isName(), command.isMajor(), student);
+            consent = Consent.withId(consent.getId(), type, value, student);
         }
         return updateConsentPort.updateConsent(consent);
     }

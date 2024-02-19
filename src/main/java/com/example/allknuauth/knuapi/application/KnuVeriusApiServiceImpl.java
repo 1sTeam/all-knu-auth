@@ -2,7 +2,7 @@ package com.example.allknuauth.knuapi.application;
 
 import com.example.allknuauth.global.asset.ApiEndpointSecretProperties;
 import com.example.allknuauth.global.exception.errors.KnuApiCallFailedException;
-import com.example.allknuauth.knuapi.application.dto.VeriusInfo;
+import com.example.allknuauth.knuapi.application.port.out.VeriusInfo;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

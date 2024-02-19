@@ -1,6 +1,6 @@
 package com.example.allknuauth.consent.application.port.in;
 
-import com.example.allknuauth.knuapi.application.dto.SessionInfo;
+import com.example.allknuauth.knuapi.application.port.out.SessionInfo;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

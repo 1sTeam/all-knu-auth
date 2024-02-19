@@ -1,11 +1,10 @@
 package com.example.allknuauth.student.adapter.out.persistence;
-
 import com.example.allknuauth.student.domain.Student;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-@Component
-class StudentMapper {
-    Student mapToStudentEntity(StudentEntity student) {
-        return Student.withId(student.getId(), student.getStudentId(), student.getMajor(), student.getName());
-    }
+@Mapper(componentModel = "spring")
+public interface StudentMapper {
+    StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
+    Student toDomain(StudentEntity student);
 }
