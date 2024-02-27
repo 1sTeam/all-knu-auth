@@ -4,6 +4,7 @@ import com.example.allknuauth.consent.application.port.out.LoadConsentPort;
 import com.example.allknuauth.consent.application.port.out.UpdateConsentPort;
 import com.example.allknuauth.consent.domain.Consent;
 import com.example.allknuauth.consent.domain.ConsentType;
+import com.example.allknuauth.student.adapter.out.persistence.StudentEntity;
 import com.example.allknuauth.student.adapter.out.persistence.StudentMapper;
 import com.example.allknuauth.student.domain.Student;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,8 @@ class ConsentPersistenceAdapter implements UpdateConsentPort, LoadConsentPort {
 
     @Override
     public Consent loadConsentByStudentAndType(Student student, ConsentType type) {
-        ConsentEntity consent = consentRepository.findByStudentAndType(student, type);
+        StudentEntity studentEntity = studentMapper.toEntity(student);
+        ConsentEntity consent = consentRepository.findByStudentAndType(studentEntity, type);
         if (consent == null) {
             return null;
         }
@@ -39,7 +41,7 @@ class ConsentPersistenceAdapter implements UpdateConsentPort, LoadConsentPort {
         ConsentEntity consentEntity = ConsentEntity.builder()
                 .id(consent.getId())
                 .type(consent.getType())
-                .value(consent.isValue())
+                .consent(consent.isConsent())
                 .student(studentMapper.toEntity(consent.getStudent()))
                 .build();
         consentEntity = consentRepository.save(consentEntity);

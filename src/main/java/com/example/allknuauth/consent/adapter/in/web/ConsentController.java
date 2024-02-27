@@ -1,5 +1,6 @@
 package com.example.allknuauth.consent.adapter.in.web;
 
+import com.example.allknuauth.consent.application.port.in.LoadConsentCommand;
 import com.example.allknuauth.consent.application.port.in.LoadConsentUseCase;
 import com.example.allknuauth.consent.application.port.in.UpdateConsentCommand;
 import com.example.allknuauth.consent.application.port.in.UpdateConsentUseCase;
@@ -34,4 +35,14 @@ public class ConsentController {
                 .build(), HttpStatus.OK);
     }
 
+    @GetMapping("/students/{studentId}/consents")
+    public ResponseEntity<CommonResponse> loadConsents(@PathVariable(name = "studentId") String studentId) {
+        LoadConsentCommand loadConsentCommand = loadConsentUseCase.loadConsents(studentId);
+
+        return new ResponseEntity<>(CommonResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("개인정보 수집 동의 여부 조회 성공")
+                .list(loadConsentCommand)
+                .build(), HttpStatus.OK);
+    }
 }

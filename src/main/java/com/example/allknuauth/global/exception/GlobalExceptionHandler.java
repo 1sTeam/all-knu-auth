@@ -6,6 +6,8 @@ import com.example.allknuauth.global.exception.errors.FcmClientFailedException;
 import com.example.allknuauth.global.exception.errors.KnuApiCallFailedException;
 import com.example.allknuauth.global.exception.errors.KnuReadTimeOutException;
 import com.example.allknuauth.global.exception.errors.LoginFailedException;
+import com.example.allknuauth.global.exception.errors.NotConsentStudentIdException;
+import com.example.allknuauth.global.exception.errors.NotFoundStudentException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -116,6 +118,32 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FcmClientFailedException.class)
     protected ResponseEntity<ErrorResponse> handleFcmClientFailedException(FcmClientFailedException e) {
         ErrorCode errorCode = ErrorCode.FCM_CLIENT_FAILED;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotConsentStudentIdException.class)
+    protected ResponseEntity<ErrorResponse> handleNotConsentStudentIdException(NotConsentStudentIdException e) {
+        ErrorCode errorCode = ErrorCode.NOT_CONSENT_STUDENT_ID;
+
+        ErrorResponse response = ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .status(errorCode.getStatus().value())
+                .build();
+
+        return new ResponseEntity<>(response, errorCode.getStatus());
+    }
+
+    @ExceptionHandler(NotFoundStudentException.class)
+    protected ResponseEntity<ErrorResponse> handleNotFoundStudentException(NotFoundStudentException e) {
+        ErrorCode errorCode = ErrorCode.NOT_FOUND_STUDENT;
 
         ErrorResponse response = ErrorResponse.builder()
                 .code(errorCode.getCode())

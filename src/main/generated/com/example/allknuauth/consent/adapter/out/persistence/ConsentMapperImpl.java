@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T11:23:15+0900",
+    date = "2024-02-27T23:41:19+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
 )
 @Component
@@ -24,7 +24,7 @@ public class ConsentMapperImpl implements ConsentMapper {
 
         consent1.id( consent.getId() );
         consent1.type( consent.getType() );
-        consent1.value( consent.isValue() );
+        consent1.consent( consent.isConsent() );
         consent1.student( studentEntityToStudent( consent.getStudent() ) );
 
         return consent1.build();

@@ -64,7 +64,7 @@ public class UpdateConsentService implements UpdateConsentUseCase {
     }
 
     private String getVeriusInfo(Map<ConsentType, String> veriusInfo, Consent consent) {
-        if (consent.isValue()) {
+        if (consent.isConsent()) {
             return veriusInfo.get(consent.getType());
         }
         return null;

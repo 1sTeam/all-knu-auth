@@ -28,18 +28,18 @@ public class ConsentEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "type", nullable = false)
     private ConsentType type;
-    @Column(name = "value")
-    private boolean value;
+    @Column(name = "consent")
+    private boolean consent;
     @ManyToOne
     @JoinColumn
     private StudentEntity student;
 
 
     @Builder
-    private ConsentEntity(Long id, ConsentType type, boolean value, StudentEntity student) {
+    private ConsentEntity(Long id, ConsentType type, boolean consent, StudentEntity student) {
         this.id = id;
         this.type = type;
-        this.value = value;
+        this.consent = consent;
         this.student = student;
     }
 }

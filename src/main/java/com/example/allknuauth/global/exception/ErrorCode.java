@@ -20,6 +20,7 @@ public enum ErrorCode {
     INVALID_STUDENT_ID(HttpStatus.BAD_REQUEST, "STUDENT_001", "유효하지 않은 학번임"),
     LOAD_VERIUS_STUDENT_INFO_FAILED(HttpStatus.NOT_FOUND, "STUDENT_002", "참인재 학생 정보 불러오기 실패"),
     NOT_CONSENT_STUDENT_ID(HttpStatus.BAD_REQUEST, "STUDENT_003", "학번 수집 거부 불가"),
+    NOT_FOUND_STUDENT(HttpStatus.BAD_REQUEST, "STUDENT_004", "학생 정보가 없음"),
 
     FCM_CLIENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FCM_001", "FCM Failed"),
     ;
