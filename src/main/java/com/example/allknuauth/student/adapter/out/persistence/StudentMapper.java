@@ -7,4 +7,5 @@ import org.mapstruct.factory.Mappers;
 public interface StudentMapper {
     StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
     Student toDomain(StudentEntity student);
+    StudentEntity toEntity(Student student);
 }

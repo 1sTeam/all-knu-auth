@@ -17,8 +17,9 @@ public enum ErrorCode {
     REQUEST_PARAMETER_BIND_FAILED(HttpStatus.BAD_REQUEST, "REQ_001", "PARAMETER_BIND_FAILED"),
     INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH004", "INVALID_JWT_TOKEN."),
     KNU_API_FAILED(HttpStatus.FORBIDDEN, "AUTH_005", "knu api call failed"),
-    INVALID_STUDENT_ID(HttpStatus.NOT_FOUND, "STUDENT_001", "유효하지 않은 학번임"),
+    INVALID_STUDENT_ID(HttpStatus.BAD_REQUEST, "STUDENT_001", "유효하지 않은 학번임"),
     LOAD_VERIUS_STUDENT_INFO_FAILED(HttpStatus.NOT_FOUND, "STUDENT_002", "참인재 학생 정보 불러오기 실패"),
+    NOT_CONSENT_STUDENT_ID(HttpStatus.BAD_REQUEST, "STUDENT_003", "학번 수집 거부 불가"),
 
     FCM_CLIENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FCM_001", "FCM Failed"),
     ;

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T11:23:15+0900",
+    date = "2024-02-27T22:40:05+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
 )
 @Component
@@ -26,5 +26,21 @@ public class StudentMapperImpl implements StudentMapper {
         student1.name( student.getName() );
 
         return student1.build();
+    }
+
+    @Override
+    public StudentEntity toEntity(Student student) {
+        if ( student == null ) {
+            return null;
+        }
+
+        StudentEntity.StudentEntityBuilder studentEntity = StudentEntity.builder();
+
+        studentEntity.id( student.getId() );
+        studentEntity.studentId( student.getStudentId() );
+        studentEntity.name( student.getName() );
+        studentEntity.major( student.getMajor() );
+
+        return studentEntity.build();
     }
 }

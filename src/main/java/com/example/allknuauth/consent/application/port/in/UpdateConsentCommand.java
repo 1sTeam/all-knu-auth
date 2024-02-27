@@ -1,10 +1,16 @@
 package com.example.allknuauth.consent.application.port.in;
 
+import com.example.allknuauth.consent.domain.ConsentType;
 import com.example.allknuauth.knuapi.application.port.out.SessionInfo;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
+
+import static com.example.allknuauth.consent.domain.ConsentType.NAME;
+import static com.example.allknuauth.consent.domain.ConsentType.STUDENT_ID;
 
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
@@ -22,5 +28,15 @@ public class UpdateConsentCommand {
         this.name = name;
         this.studentId = studentId;
         this.major = major;
+    }
+
+    public boolean getInfoByConsentType(ConsentType consentType) {
+        if (STUDENT_ID == consentType) {
+            return this.studentId;
+        }
+        if (NAME == consentType) {
+            return this.name;
+        }
+        return major;
     }
 }
