@@ -1,6 +1,5 @@
 package com.example.allknuauth.auth.adapter.in.web;
 
-import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

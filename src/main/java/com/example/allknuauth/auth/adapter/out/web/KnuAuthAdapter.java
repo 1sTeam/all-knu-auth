@@ -1,9 +1,6 @@
 package com.example.allknuauth.auth.adapter.out.web;
 
-import com.example.allknuauth.auth.application.port.out.GetStudentInfoPort;
-import com.example.allknuauth.auth.application.port.out.LoginMobilePort;
-import com.example.allknuauth.auth.application.port.out.LoginSsoPort;
-import com.example.allknuauth.auth.application.port.out.LoginVeriusPort;
+import com.example.allknuauth.auth.application.port.out.*;
 import com.example.allknuauth.auth.domain.MajorNoticeType;
 import com.example.allknuauth.global.asset.ApiEndpointSecretProperties;
 import com.example.allknuauth.global.exception.errors.KnuApiCallFailedException;
@@ -17,26 +14,25 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class KnuAuthAdapter implements LoginMobilePort, LoginSsoPort, LoginVeriusPort, GetStudentInfoPort {
+public class KnuAuthAdapter implements GetStudentInfoPort, GetSessionInfoPort {
 
     private static final Logger logger = LoggerFactory.getLogger(KnuAuthAdapter.class);
     private final ApiEndpointSecretProperties apiEndpointSecretProperties;
+
     @Override
-    public Map<String, String> loginKnuMobile(Map<String, String> data) {
-        Map<String, String> cookies = null;
+    public Map<String, Object> getSessionInfo(Map<String, String> data){
+        //mobile
+        Map<String, String> mobileCookies = null;
         try {
-             Connection.Response response = Jsoup.connect(apiEndpointSecretProperties.getMobile().getLogin())
+            Connection.Response response = Jsoup.connect(apiEndpointSecretProperties.getMobile().getLogin())
                     .method(Connection.Method.POST)
                     .data(data)
                     .ignoreContentType(true)
@@ -48,7 +44,7 @@ public class KnuAuthAdapter implements LoginMobilePort, LoginSsoPort, LoginVeriu
             JsonNode jsonNode = mapper.readTree(response.body()); // json mapper
 
             if (jsonNode.get("result").toString().equals("\"success\"")) {
-                cookies = response.cookies();
+                mobileCookies = response.cookies();
                 logger.info("모바일 로그인 성공");
             } else {
                 logger.info("모바일 로그인 실패");
@@ -57,12 +53,15 @@ public class KnuAuthAdapter implements LoginMobilePort, LoginSsoPort, LoginVeriu
         catch (IOException e){
             logger.error("mobile login error : " + e);
         }
-        return cookies;
-    }
 
-    @Override
-    public Map<String, String> loginKnuSso(Map<String, String> data) {
-        Map<String, String> cookies = null;
+        //sso
+        Map<String, String> ssoCookies = null;
+        data.put("uid", data.get("user_id"));
+        data.remove("user_id");
+        data.put("password", data.get("user_pwd"));
+        data.remove("user_pwd");
+        data.put("gid", "gid_web");
+        data.put("returl", apiEndpointSecretProperties.getCrawling().getSsoRetUrl());
         try {
             //ssoLogin jsp를 호출한다.
             Connection.Response ssoLoginRes = Jsoup.connect(apiEndpointSecretProperties.getCrawling().getSsoLogin())
@@ -73,10 +72,10 @@ public class KnuAuthAdapter implements LoginMobilePort, LoginSsoPort, LoginVeriu
                     .timeout(5000) // 5초
                     .execute();
 
-            cookies = ssoLoginRes.cookies();
+            ssoCookies = ssoLoginRes.cookies();
             logger.info("sso 로그인 성공");
             //로그인 성공 시 sso_token을 받는다. 이를 통해 로그인 성공 여부 판단
-            if (cookies.get("sso_token") == null) {
+            if (ssoCookies.get("sso_token") == null) {
                 //로그인 실패
                 logger.info("sso 로그인 실패");
                 throw new LoginFailedException();
@@ -84,11 +83,8 @@ public class KnuAuthAdapter implements LoginMobilePort, LoginSsoPort, LoginVeriu
         } catch (IOException e) {
             logger.error("sso login error : " + e);
         }
-        return cookies;
-    }
 
-    @Override
-    public Map<String, String> loginKnuVerius(Map<String, String> ssoCookies) {
+        //verius
         Map<String, String> veriusCookies = null;
         try {
             Connection.Response res = Jsoup.connect(apiEndpointSecretProperties.getCrawling().getVeriusSsoLogin())
@@ -103,11 +99,18 @@ public class KnuAuthAdapter implements LoginMobilePort, LoginSsoPort, LoginVeriu
         } catch (IOException e) {
             logger.error("veriusLogin() error: " + e);
         }
-        return veriusCookies;
+
+        //sessionInfo
+        Map<String, Object> sessionInfo = new HashMap<>();
+        sessionInfo.put("mobileCookies", mobileCookies);
+        sessionInfo.put("ssoCookies", ssoCookies);
+        sessionInfo.put("veriusCookies", veriusCookies);
+
+        return sessionInfo;
     }
 
     @Override
-    public Map<String, String> getKnuStudentInfo(Map<String, String> veriusCookies) {
+    public Map<String, String> getStudentInfo(Map<String, String> veriusCookies) {
         String url = apiEndpointSecretProperties.getCrawling().getVeriusStudentInfo() + "?CURRENT_MENU_CODE=MENU0028&TOP_MENU_CODE=MENU0017";
         Map<String, String> result = null;
         try {
