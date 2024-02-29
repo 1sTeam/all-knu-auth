@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### 비밀키 ###
+secrets/
+application-prod.yml
